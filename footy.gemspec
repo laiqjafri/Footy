@@ -11,6 +11,17 @@ Gem::Specification.new do |s|
   s.authors       = ["Laiq Jafri"]
   s.email         = 'laiq@tekstart.us'
   s.homepage      = "http://github.com/laiqjafri/Footy"
-  s.files         = `git ls-files`.split("\n")
+  s.files         = [
+    'lib/footy.rb',
+    'lib/footy/configuration.rb',
+    'lib/footy/api.rb',
+    'lib/footy/version.rb',
+    'lib/footy/competition.rb',
+    'lib/footy/fixture.rb',
+    'lib/footy/team.rb',
+    'lib/footy/player.rb',
+    'lib/footy/commentary.rb',
+    'lib/footy/substitution.rb',
+  ]
   s.license       = 'MIT'
 end
