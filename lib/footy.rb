@@ -6,6 +6,8 @@ require 'footy/fixture'
 require 'footy/commentary'
 require 'footy/player'
 require 'footy/substitution'
+require 'footy/card'
+require 'footy/goal'
 
 module Footy
   # Gives access to the current Configuration.

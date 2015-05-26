@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
     'lib/footy/player.rb',
     'lib/footy/commentary.rb',
     'lib/footy/substitution.rb',
+    'lib/footy/card.rb',
+    'lib/footy/goal.rb'
   ]
   s.license       = 'MIT'
 end

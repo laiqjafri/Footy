@@ -7,7 +7,11 @@ module Footy
       :localteam_subs,
       :visitorteam_subs,
       :localteam_substitutions,
-      :visitorteam_substitutions
+      :visitorteam_substitutions,
+      :localteam_cards,
+      :visitorteam_cards,
+      :localteam_goals,
+      :visitorteam_goals
 
     def initialize
       @match_info                = nil
@@ -18,6 +22,10 @@ module Footy
       @visitorteam_subs          = []
       @localteam_substitutions   = []
       @visitorteam_substitutions = []
+      @localteam_goals           = []
+      @visitorteam_goals         = []
+      @localteam_cards           = []
+      @visitorteam_cards         = []
     end
 
     def set_info data
@@ -80,6 +88,61 @@ module Footy
       end
     end
 
+    def set_cards data
+      if !data.nil? and !data["localteam"].nil? and data["localteam"]["yellowcards"].count > 0
+        if data["localteam"]["yellowcards"]["player"]["1"].nil? #Handle the stupid JSON. This should have been an array
+          card = data["localteam"]["yellowcards"]["player"]
+          @localteam_cards << Footy::Card.new(card["name"], card["minute"], 'yellow')
+        else
+          data["localteam"]["yellowcards"]["player"].each{|k, v| @localteam_cards << Footy::Card.new(v["name"], v["minute"], 'yellow') }
+        end
+      end
+      if !data.nil? and !data["localteam"].nil? and data["localteam"]["redcards"].count > 0
+        if data["localteam"]["redcards"]["player"]["1"].nil?
+          card = data["localteam"]["redcards"]["player"]
+          @localteam_cards << Footy::Card.new(card["name"], card["minute"], 'red')
+        else
+          data["localteam"]["redcards"]["player"].each{|k, v| @localteam_cards << Footy::Card.new(v["name"], v["minute"], 'red') }
+        end
+      end
+
+      if !data.nil? and !data["visitorteam"].nil? and data["visitorteam"]["yellowcards"].count > 0
+        if data["visitorteam"]["yellowcards"]["player"]["1"].nil?
+          card = data["visitorteam"]["yellowcards"]["player"]
+          @visitorteam_cards << Footy::Card.new(card["name"], card["minute"], 'yellow')
+        else
+          data["visitorteam"]["yellowcards"]["player"].each{|k, v| @visitorteam_cards << Footy::Card.new(v["name"], v["minute"], 'yellow') }
+        end
+      end
+      if !data.nil? and !data["visitorteam"].nil? and data["visitorteam"]["redcards"].count > 0
+        if data["visitorteam"]["redcards"]["player"]["1"].nil?
+          card = data["visitorteam"]["redcards"]["player"]
+          @visitorteam_cards << Footy::Card.new(card["name"], card["minute"], 'red')
+        else
+          data["visitorteam"]["redcards"]["player"].each{|k, v| @visitorteam_cards << Footy::Card.new(v["name"], v["minute"], 'red') }
+        end
+      end
+    end
+
+    def set_goals data
+      if !data.nil? and !data["localteam"].nil? and data["localteam"]["goals"].count > 0
+        if data["localteam"]["goals"]["player"]["1"].nil?
+          goal = data["localteam"]["goals"]["player"]
+          @localteam_goals << Footy::Goal.new(goal["name"], goal["minute"], goal["owngoal"] == "True", goal["penalty"] == "True")
+        else
+          data["localteam"]["goals"]["player"].each{|k, v| @localteam_goals << Footy::Goal.new(v["name"], v["minute"], v["owngoal"] == "True", v["penalty"] == "True") }
+        end
+      end
+      if !data.nil? and !data["visitorteam"].nil? and data["visitorteam"]["goals"].count > 0
+        if data["visitorteam"]["goals"]["player"]["1"].nil?
+          goal = data["visitorteam"]["goals"]["player"]
+          @visitorteam_goals << Footy::Goal.new(goal["name"], goal["minute"], goal["owngoal"] == "True", goal["penalty"] == "True")
+        else
+          data["visitorteam"]["goals"]["player"].each{|k, v| @visitorteam_goals << Footy::Goal.new(v["name"], v["minute"], v["owngoal"] == "True", v["penalty"] == "True") }
+        end
+      end
+    end
+
     class << self
       def parse_from_response response
         commentary = Commentary.new
@@ -90,6 +153,8 @@ module Footy
         commentary.set_vistorteam_subs(response["comm_match_subs"])                    unless response["comm_match_subs"].nil?
         commentary.set_localteam_substitutions(response["comm_match_substitutions"])   unless response["comm_match_substitutions"].nil?
         commentary.set_visitorteam_substitutions(response["comm_match_substitutions"]) unless response["comm_match_substitutions"].nil?
+        commentary.set_cards(response["comm_match_summary"])                           unless response["comm_match_summary"].nil?
+        commentary.set_goals(response["comm_match_summary"])                           unless response["comm_match_summary"].nil?
 
         commentary.set_commentaries(response["comm_commentaries"]["comment"].values) if !response["comm_commentaries"].nil? and !response["comm_commentaries"]["comment"].nil?
         commentary
