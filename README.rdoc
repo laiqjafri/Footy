@@ -5,3 +5,71 @@ Author:: Laiq Jafri
 License:: {MIT}[http://creativecommons.org/licenses/MIT/]
 Info:: {Footy}[http://github.com/laiqjafri/footy]
 Bugs:: {Issues}[http://github.com/laiqjafri/footy/issues]
+
+This gem gives you access to your account at {Football API}[http://football-api.com/]. Using this you can easily fetch competitions, fixtures, and match commentaries.
+
+Beforehand you need to configure Footy with your API key. You can sign up for one {here}[http://football-api.com/pricing/]. You may find detailed examples below. Exceptions will be raised if you
+call these methods and the keys can't be found.
+
+== Ruby Installation
+
+  gem install footy
+
+== Rails Installation
+
+Add this to your Gemfile:
+
+  gem "footy"
+
+== Setting up your API Key
+=== Footy.configure
+
+You may use the block style configuration. The following code could be placed
+into a +config/initializers/footy.rb+ when used in a Rails project.
+
+  Footy.configure do |config|
+    config.api_key  = 'xxxxxxxx-yyyy-zzzz-zzzzzzzzzzzz'
+  end
+
+== To use 'footy'
+
+=== Example
+
+  Footy.configure do |config|
+    config.api_key  = 'xxxxxxxx-yyyy-zzzz-zzzzzzzzzzzz'
+  end
+
+  competitions = Footy::Competition.all
+  fixtures     = competitions.first.fixtures Time.now - (14*24*60*60), Time.now - (7*24*60*60)
+  # This will fetch fixtures from last week
+  # Fixtures have following attributes:
+  # id
+  # date
+  # time
+  # status
+  # localteam
+  # visitorteam
+
+  commentary   = fixtures.first.commentary
+  # Commentary class has following attributes:
+  # info
+  # localteam_players Returns the line up for local team
+  # visitorteam_players Returns the line up for visitor team
+  # commentaries Returns minute by minute commentary hash
+  # localteam_subs Returns reserved players for local team
+  # visitorteam_subs Returns reserved players for visitor team
+  # localteam_substitutions Returns substitutions made for local team
+  # visitorteam_substitutions Returns substitutions made for visitor team
+  # localteam_cards Returns cards shown to local team players
+  # visitorteam_cards Returns cards shown to visitor team players
+  # localteam_goals Returns goals info for local team
+  # visitorteam_goals Returns goals info for visitor team
+
+  There is a general method +Footy::Api.call+ which can be used to get JSON response from the API. You will need to go through the documentation {here}[http://football-api.com/documentation/]. You can for example:
+  competitions = Footy::Api.call :Action => "competitions"
+  OR
+  fixtures = Footy::Api.call :Action => "fixtures", :comp_id => {{competition_id}}, :from_date => "23.05.2015", :to_date => "30.05.2015"
+
+== TODO
+* Testing
+* Better documentation
