@@ -21,6 +21,9 @@ Add this to your Gemfile:
 
   gem "footy"
 
+Then run:
+  bundle install
+
 == Setting up your API Key
 === Footy.configure
 
@@ -65,7 +68,7 @@ into a +config/initializers/footy.rb+ when used in a Rails project.
   # localteam_goals Returns goals info for local team
   # visitorteam_goals Returns goals info for visitor team
 
-  There is a general method +Footy::Api.call+ which can be used to get JSON response from the API. You will need to go through the documentation {here}[http://football-api.com/documentation/]. You can for example:
+There is a general method +Footy::Api.call+ which can be used to get JSON response from the API. You will need to go through the documentation {here}[http://football-api.com/documentation/]. You can for example:
   competitions = Footy::Api.call :Action => "competitions"
   OR
   fixtures = Footy::Api.call :Action => "fixtures", :comp_id => {{competition_id}}, :from_date => "23.05.2015", :to_date => "30.05.2015"
