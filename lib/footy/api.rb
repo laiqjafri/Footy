@@ -4,7 +4,9 @@ module Footy
   class Api
     class << self
       def call options={}
-        JSON.parse(Net::HTTP.get_response(URI.parse(url(options))).body)
+        response = JSON.parse(Net::HTTP.get_response(URI.parse(url(options))).body)
+        raise Footy::FootyError, response["ERROR"] unless response["ERROR"] == "OK"
+        response
       end
 
       private

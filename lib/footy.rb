@@ -19,4 +19,7 @@ module Footy
     config = configuration
     yield(config)
   end
+
+  class FootyError < StandardError
+  end
 end
